@@ -7,7 +7,7 @@
 #include <ranges>
 #include <QApplication>
 
-#include "LCE/libLCEExports.h"
+#include "libLCEExports.h"
 #include "GUI/Screens/Edit/EditScreen.h"
 
 LPP::LegacyPlusPlus LPP::LegacyPlusPlus::sInstance = LegacyPlusPlus();
@@ -20,15 +20,11 @@ int main(int argc, char *argv[]) {
 }
 
 void LPP::LegacyPlusPlus::run() {
-    std::cout << lce::lce_get_library_string() << std::endl;
+    lce::printLibraryInfo();
     std::cout << "Starting LegacyPlusPlus v" << LPP::LegacyPlusPlus::VERSION << "\n";
 
     this->mainWindow = new GUI::Windows::MainWindow();
     this->mainWindow->show();
 
     QApplication::instance()->exec();
-}
-
-void LPP::LegacyPlusPlus::shutdown() {
-    // do nothing for now
 }
