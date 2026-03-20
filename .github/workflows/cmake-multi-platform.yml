@@ -23,7 +23,7 @@ jobs:
       #
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-latest, macos-15-intel, windows-11-arm ]
+        os: [ ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-latest, macos-13, windows-11-arm ]
         build_type: [ Release, Debug ]
         c_compiler: [ gcc, clang, cl ]
         include:
@@ -67,12 +67,12 @@ jobs:
             compiler_name: GCC
             c_compiler: gcc
             cpp_compiler: g++
-          - os: macos-15-intel
+          - os: macos-13
             platform_name: macOS x86_64
             compiler_name: Clang
             c_compiler: clang
             cpp_compiler: clang++
-          - os: macos-15-intel
+          - os: macos-13
             platform_name: macOS x86_64
             compiler_name: GCC
             c_compiler: gcc
@@ -92,7 +92,7 @@ jobs:
             c_compiler: cl
           - os: macos-latest
             c_compiler: cl
-          - os: macos-15-intel
+          - os: macos-13
             c_compiler: cl
 
     steps:
@@ -139,15 +139,15 @@ jobs:
         run: find "${{ github.workspace }}/cmake-build-${{ matrix.build_type }}-${{ matrix.c_compiler }}/_deps/lce-build" -type f \( -iname "*.so" -o -iname "*.dylib" \) -exec mv {} "${{ github.workspace }}/cmake-build-${{ matrix.build_type }}-${{ matrix.c_compiler }}" \;
 
       - name: Run CMake Install (macOS)
-        if: matrix.os == 'macos-latest' || matrix.os == 'macos-15-intel'
+        if: matrix.os == 'macos-latest' || matrix.os == 'macos-13'
         run: cmake --install ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} ${{ matrix.build_settings }}
 
       - name: Fix CI folder structure (macOS)
-        if: matrix.os == 'macos-latest' || matrix.os == 'macos-15-intel'
+        if: matrix.os == 'macos-latest' || matrix.os == 'macos-13'
         run: touch "${{ github.workspace }}/cmake-build-${{ matrix.build_type }}-${{ matrix.c_compiler }}/.gitignore"
 
       - name: QT Deploy (macOS)
-        if: matrix.os == 'macos-latest' || matrix.os == 'macos-15-intel'
+        if: matrix.os == 'macos-latest' || matrix.os == 'macos-13'
         run: macdeployqt "${{ github.workspace }}/cmake-build-${{ matrix.build_type }}-${{ matrix.c_compiler }}/LegacyPlusPlus.app"
 
       - name: QT Deploy (Windows)
@@ -165,7 +165,7 @@ jobs:
 
       - name: Upload Artifact (macOS)
         uses: actions/upload-artifact@v4
-        if: matrix.os == 'macos-latest' || matrix.os == 'macos-15-intel'
+        if: matrix.os == 'macos-latest' || matrix.os == 'macos-13'
         with:
           name: ${{ matrix.platform_name }}-${{ matrix.compiler_name }}_${{ matrix.build_type }}
           path: |
@@ -178,4 +178,3 @@ jobs:
         with:
           name: ${{ matrix.platform_name }}-${{ matrix.compiler_name }}_${{ matrix.build_type }}
           path: ${{ github.workspace }}/cmake-build-${{ matrix.build_type }}-${{ matrix.c_compiler }}/${{ matrix.build_type }}
-
